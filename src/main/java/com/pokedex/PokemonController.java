@@ -1,10 +1,14 @@
 package com.pokedex;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * Created by iagudo on 29/10/16.
@@ -12,6 +16,7 @@ import java.util.ArrayList;
 
 @RestController
 public class PokemonController {
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
     private final PokemonCollection collection = new PokemonCollection();
 
     @RequestMapping(value = "/getAll", method = RequestMethod.GET, produces = "application/json")
@@ -32,8 +37,26 @@ public class PokemonController {
     @RequestMapping(value = "/setFavorite", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public boolean setFavorite(@RequestParam(value = "name") String name, HttpServletResponse response) {
+    public boolean setFavorite(@RequestBody @Valid final Map<String, String> parameters, HttpServletResponse response) {
+        String name = parameters.get("name");
+        log.info("PokemonController::setFavorite (" + name + ")");
         boolean result = this.collection.setFavorite(name);
+        if (result) {
+            response.setStatus(HttpServletResponse.SC_ACCEPTED);
+        } else {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
+
+        return result;
+    }
+
+    @RequestMapping(value = "/unsetFavorite", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public boolean unsetFavorite(@RequestBody @Valid final Map<String, String> parameters, HttpServletResponse response) {
+        String name = parameters.get("name");
+        log.info("PokemonController::unsetFavorite (" + name + ")");
+        boolean result = this.collection.unsetFavorite(name);
         if (result) {
             response.setStatus(HttpServletResponse.SC_ACCEPTED);
         } else {

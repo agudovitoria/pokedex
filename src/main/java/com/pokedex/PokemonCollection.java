@@ -3,11 +3,14 @@ package com.pokedex;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by iagudo on 29/10/16.
  */
 public class PokemonCollection {
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
     private ArrayList<Pokemon> collection;
 
     public PokemonCollection() {
@@ -45,9 +48,22 @@ public class PokemonCollection {
     }
 
     public boolean setFavorite(String name) {
+        log.info("PokemonCollection::setFavorite (" + name + ")");
         for (Pokemon p: this.collection) {
             if (p.getName().equals(name)) {
                 p.setFavorite(true);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean unsetFavorite(String name) {
+        log.info("PokemonCollection::unsetFavorite (" + name + ")");
+        for (Pokemon p: this.collection) {
+            if (p.getName().equals(name)) {
+                p.setFavorite(false);
                 return true;
             }
         }
