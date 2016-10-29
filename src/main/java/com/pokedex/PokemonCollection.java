@@ -82,7 +82,7 @@ public class PokemonCollection {
                 result = true;
             }
         } catch (Exception e) {
-            log.error("PokemonCollection::add exception " + e.getMessage());
+            log.error("PokemonCollection::unsetFavorite exception " + e.getMessage());
         } finally {
             return result;
         }
@@ -101,7 +101,6 @@ public class PokemonCollection {
             }
         } catch (Exception e) {
             log.error("PokemonCollection::add exception " + e.getMessage());
-            result = false;
         } finally {
             return result;
         }
@@ -119,8 +118,7 @@ public class PokemonCollection {
                 result = true;
             }
         } catch (Exception e) {
-            log.error("PokemonCollection::add modify " + e.getMessage());
-            result = false;
+            log.error("PokemonCollection::modify exception " + e.getMessage());
         } finally {
             return result;
         }
@@ -134,12 +132,11 @@ public class PokemonCollection {
             int pos = this.collection.indexOf(p);
 
             if (pos != -1) {
-                this.collection.remove(pos);
+                this.collection.remove(p);
                 result = true;
             }
         } catch (Exception e) {
             log.error("PokemonCollection::delete exception " + e.getMessage());
-            result = false;
         } finally {
             return result;
         }
