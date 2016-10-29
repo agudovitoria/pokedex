@@ -65,4 +65,50 @@ public class PokemonController {
 
         return result;
     }
+
+    @RequestMapping(value = "/add", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public boolean add(@RequestBody @Valid Pokemon pokemon, HttpServletResponse response) {
+        log.info("PokemonController::add (" + pokemon + ")");
+        boolean result = this.collection.add(pokemon);
+        if (result) {
+            response.setStatus(HttpServletResponse.SC_ACCEPTED);
+        } else {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
+
+        return result;
+    }
+
+    @RequestMapping(value = "/modify", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public boolean modify(@RequestBody @Valid Pokemon pokemon, HttpServletResponse response) {
+        log.info("PokemonController::modify (" + pokemon + ")");
+        boolean result = this.collection.modify(pokemon);
+        if (result) {
+            response.setStatus(HttpServletResponse.SC_ACCEPTED);
+        } else {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
+
+        return result;
+    }
+
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE, consumes = "application/json", produces = "application/json")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public boolean delete(@RequestBody @Valid  Map<String, String> parameters, HttpServletResponse response) {
+        String name = parameters.get("name");
+        log.info("PokemonController::delete (" + name + ")");
+        boolean result = this.collection.delete(name);
+        if (result) {
+            response.setStatus(HttpServletResponse.SC_ACCEPTED);
+        } else {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
+
+        return result;
+    }
 }

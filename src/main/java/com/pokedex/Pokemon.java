@@ -19,6 +19,22 @@ public class Pokemon {
         this.favorite = false;
     }
 
+    public Pokemon(String name) {
+        this.name = name;
+        this.type = null;
+        this.description = null;
+        this.evolution = null;
+        this.favorite = false;
+    }
+
+    public Pokemon(Pokemon pokemon) {
+        this.name = pokemon.getName();
+        this.type = pokemon.getDescription();
+        this.description = pokemon.getType();
+        this.evolution = pokemon.getEvolution();
+        this.favorite = pokemon.isFavorite();
+    }
+
     public long getId() {
         return id;
     }
@@ -65,5 +81,25 @@ public class Pokemon {
 
     public void setFavorite(boolean favorite) {
         this.favorite = favorite;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Pokemon pokemon = (Pokemon) o;
+        if (!name.equals(pokemon.name)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name.hashCode();
+        result = 31 * result + type.hashCode();
+        result = 31 * result + description.hashCode();
+        result = 31 * result + (evolution != null ? evolution.hashCode() : 0);
+        result = 31 * result + (favorite ? 1 : 0);
+        return result;
     }
 }

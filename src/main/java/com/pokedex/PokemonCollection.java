@@ -3,6 +3,7 @@ package com.pokedex;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +29,7 @@ public class PokemonCollection {
 
     public ArrayList getAllFavorites() {
         ArrayList favorites = new ArrayList<Pokemon>();
-        for (Pokemon p: this.collection) {
+        for (Pokemon p : this.collection) {
             if (p.isFavorite()) {
                 favorites.add(p);
             }
@@ -38,10 +39,11 @@ public class PokemonCollection {
     }
 
     public Pokemon getOneByName(String name) {
-        for (Pokemon p: this.collection) {
-            if (p.getName().equals(name)) {
-                return p;
-            }
+        Pokemon p = new Pokemon(name);
+        int pos = this.collection.indexOf(p);
+
+        if (pos != -1) {
+            return this.collection.get(pos);
         }
 
         return null;
@@ -49,26 +51,98 @@ public class PokemonCollection {
 
     public boolean setFavorite(String name) {
         log.info("PokemonCollection::setFavorite (" + name + ")");
-        for (Pokemon p: this.collection) {
-            if (p.getName().equals(name)) {
-                p.setFavorite(true);
-                return true;
-            }
-        }
+        boolean result = false;
+        try {
+            Pokemon p = new Pokemon(name);
+            int pos = this.collection.indexOf(p);
 
-        return false;
+            if (pos != -1) {
+                this.collection.get(pos).setFavorite(true);
+                result = true;
+            }
+
+            result = false;
+
+        } catch (Exception e) {
+            log.error("PokemonCollection::add exception " + e.getMessage());
+        } finally {
+            return result;
+        }
     }
 
     public boolean unsetFavorite(String name) {
         log.info("PokemonCollection::unsetFavorite (" + name + ")");
-        for (Pokemon p: this.collection) {
-            if (p.getName().equals(name)) {
-                p.setFavorite(false);
-                return true;
-            }
-        }
+        boolean result = false;
+        try {
+            Pokemon p = new Pokemon(name);
+            int pos = this.collection.indexOf(p);
 
-        return false;
+            if (pos != -1) {
+                this.collection.get(pos).setFavorite(false);
+                result = true;
+            }
+        } catch (Exception e) {
+            log.error("PokemonCollection::add exception " + e.getMessage());
+        } finally {
+            return result;
+        }
+    }
+
+    public boolean add(Pokemon pokemon) {
+        log.info("PokemonCollection::add (" + pokemon + ")");
+        boolean result = false;
+        try {
+            int pos = this.collection.indexOf(pokemon);
+
+            if (pos == -1) {
+                pokemon.setId(((Integer) this.collection.size()).longValue());
+                this.collection.add(pokemon);
+                result = true;
+            }
+        } catch (Exception e) {
+            log.error("PokemonCollection::add exception " + e.getMessage());
+            result = false;
+        } finally {
+            return result;
+        }
+    }
+
+    public boolean modify(Pokemon pokemon) {
+        log.info("PokemonCollection::modify (" + pokemon + ")");
+        boolean result = false;
+        try {
+            int pos = this.collection.indexOf(pokemon);
+
+            if (pos != -1) {
+                pokemon.setId(this.collection.get(pos).getId());
+                this.collection.set(pos, pokemon);
+                result = true;
+            }
+        } catch (Exception e) {
+            log.error("PokemonCollection::add modify " + e.getMessage());
+            result = false;
+        } finally {
+            return result;
+        }
+    }
+
+    public boolean delete(String name) {
+        log.info("PokemonCollection::delete (" + name + ")");
+        boolean result = false;
+        try {
+            Pokemon p = new Pokemon(name);
+            int pos = this.collection.indexOf(p);
+
+            if (pos != -1) {
+                this.collection.remove(pos);
+                result = true;
+            }
+        } catch (Exception e) {
+            log.error("PokemonCollection::delete exception " + e.getMessage());
+            result = false;
+        } finally {
+            return result;
+        }
     }
 
     private void initMock() {
