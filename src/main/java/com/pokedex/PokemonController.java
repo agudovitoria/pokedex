@@ -13,6 +13,7 @@ import java.util.Map;
  */
 
 @RestController
+@RequestMapping("/pokedex")
 public class PokemonController {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     private final PokemonCollection collection = new PokemonCollection();
