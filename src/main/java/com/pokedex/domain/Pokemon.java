@@ -1,5 +1,7 @@
 package com.pokedex;
 
+import java.util.ArrayList;
+
 /**
  * Created by iagudo on 29/10/16.
  * Pokemon domain class
@@ -7,9 +9,9 @@ package com.pokedex;
 public class Pokemon {
     private long id;
     private String name;
-    private String type;
+    private ArrayList<String> types;
     private String description;
-    private Long evolution;
+    private String evolution;
     private boolean favorite;
 
     /**
@@ -17,7 +19,7 @@ public class Pokemon {
      */
     public Pokemon() {
         this.name = null;
-        this.type = null;
+        this.types = null;
         this.description = null;
         this.evolution = null;
         this.favorite = false;
@@ -28,7 +30,7 @@ public class Pokemon {
      */
     public Pokemon(String name) {
         this.name = name;
-        this.type = null;
+        this.types = null;
         this.description = null;
         this.evolution = null;
         this.favorite = false;
@@ -40,8 +42,8 @@ public class Pokemon {
      */
     public Pokemon(Pokemon pokemon) {
         this.name = pokemon.getName();
-        this.type = pokemon.getDescription();
-        this.description = pokemon.getType();
+        this.types = pokemon.getTypes();
+        this.description = pokemon.getDescription();
         this.evolution = pokemon.getEvolution();
         this.favorite = pokemon.isFavorite();
     }
@@ -79,19 +81,19 @@ public class Pokemon {
     }
 
     /**
-     * Get the type property
+     * Get the types property
      * @return pokemon's type
      */
-    public String getType() {
-        return type;
+    public ArrayList<String> getTypes() {
+        return types;
     }
 
     /**
-     * Set Pokemon's type property
-     * @param type Pokemon's property to set
+     * Set Pokemon's types property
+     * @param types Pokemon's property to set
      */
-    public void setType(String type) {
-        this.type = type;
+    public void setTypes(ArrayList types) {
+        this.types = types;
     }
 
     /**
@@ -112,9 +114,9 @@ public class Pokemon {
 
     /**
      * Get the evolution pokemon if it's possible do
-     * @return evolution pokemon's id member
+     * @return evolution pokemon's name
      */
-    public Long getEvolution() {
+    public String getEvolution() {
         return evolution;
     }
 
@@ -122,7 +124,7 @@ public class Pokemon {
      * Set the evolution property
      * @param evolution Id of the Pokemon to evolution
      */
-    public void setEvolution(Long evolution) {
+    public void setEvolution(String evolution) {
         this.evolution = evolution;
     }
 
@@ -155,19 +157,5 @@ public class Pokemon {
         if (!name.equals(pokemon.name)) return false;
 
         return true;
-    }
-
-    /**
-     * Unique code due to identify Pokemon
-     * @return Unique Pokemon identificator
-     */
-    @Override
-    public int hashCode() {
-        int result = name.hashCode();
-        result = 31 * result + type.hashCode();
-        result = 31 * result + description.hashCode();
-        result = 31 * result + (evolution != null ? evolution.hashCode() : 0);
-        result = 31 * result + (favorite ? 1 : 0);
-        return result;
     }
 }
