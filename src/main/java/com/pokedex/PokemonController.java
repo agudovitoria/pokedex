@@ -1,13 +1,11 @@
 package com.pokedex;
 
+import com.pokedex.domain.Pokemon;
+import com.pokedex.domain.PokemonCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -20,13 +18,10 @@ public class PokemonController {
     private final PokemonCollection collection = new PokemonCollection();
 
     @RequestMapping(value = "/getAll", method = RequestMethod.GET, produces = "application/json")
-    public ArrayList getAll() {
-        return this.collection.getAll();
-    }
-
-    @RequestMapping(value = "/getAllFavorites", method = RequestMethod.GET, produces = "application/json")
-    public ArrayList getAllFavorites() {
-        return this.collection.getAllFavorites();
+    public PokemonResponse getAll() {
+        PokemonResponse response = new PokemonResponse();
+        response.setData(this.collection.getAll());
+        return response;
     }
 
     @RequestMapping(value = "/getOneByName/{name}", method = RequestMethod.GET, produces = "application/json")
@@ -37,78 +32,87 @@ public class PokemonController {
     @RequestMapping(value = "/setFavorite", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public boolean setFavorite(@RequestBody @Valid final Map<String, String> parameters, HttpServletResponse response) {
-        String name = parameters.get("name");
-        log.info("PokemonController::setFavorite (" + name + ")");
-        boolean result = this.collection.setFavorite(name);
-        if (result) {
-            response.setStatus(HttpServletResponse.SC_ACCEPTED);
-        } else {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+    public PokemonResponse setFavorite(@RequestBody final Map<String, String> parameters) {
+        PokemonResponse response = new PokemonResponse();
+        try {
+            String name = parameters.get("name");
+            log.info("PokemonController::setFavorite (" + name + ")");
+            boolean result = this.collection.setFavorite(name);
+            response.setError(!result);
+        } catch (Exception e) {
+            response.setError(true);
+            response.setMessage(e.getMessage());
         }
 
-        return result;
+        return response;
     }
 
     @RequestMapping(value = "/unsetFavorite", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public boolean unsetFavorite(@RequestBody @Valid final Map<String, String> parameters, HttpServletResponse response) {
-        String name = parameters.get("name");
-        log.info("PokemonController::unsetFavorite (" + name + ")");
-        boolean result = this.collection.unsetFavorite(name);
-        if (result) {
-            response.setStatus(HttpServletResponse.SC_ACCEPTED);
-        } else {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+    public PokemonResponse unsetFavorite(@RequestBody final Map<String, String> parameters) {
+        PokemonResponse response = new PokemonResponse();
+        try {
+            String name = parameters.get("name");
+            log.info("PokemonController::unsetFavorite (" + name + ")");
+            boolean result = this.collection.unsetFavorite(name);
+            response.setError(!result);
+        } catch (Exception e) {
+            response.setError(true);
+            response.setMessage(e.getMessage());
         }
 
-        return result;
+        return response;
     }
 
-    @RequestMapping(value = "/add", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
+    @RequestMapping(value = "/add", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public boolean add(@RequestBody @Valid Pokemon pokemon, HttpServletResponse response) {
-        log.info("PokemonController::add (" + pokemon + ")");
-        boolean result = this.collection.add(pokemon);
-        if (result) {
-            response.setStatus(HttpServletResponse.SC_ACCEPTED);
-        } else {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+    public PokemonResponse add(@RequestBody Pokemon pokemon) {
+        PokemonResponse response = new PokemonResponse();
+        try {
+            log.info("PokemonController::add (" + pokemon.getName() + ")");
+            boolean result = this.collection.add(pokemon);
+            response.setError(!result);
+        } catch (Exception e) {
+            response.setError(true);
+            response.setMessage(e.getMessage());
         }
 
-        return result;
+        return response;
     }
 
     @RequestMapping(value = "/modify", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public boolean modify(@RequestBody @Valid Pokemon pokemon, HttpServletResponse response) {
-        log.info("PokemonController::modify (" + pokemon + ")");
-        boolean result = this.collection.modify(pokemon);
-        if (result) {
-            response.setStatus(HttpServletResponse.SC_ACCEPTED);
-        } else {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+    public PokemonResponse modify(@RequestBody Pokemon pokemon) {
+        PokemonResponse response = new PokemonResponse();
+        try {
+            log.info("PokemonController::modify (" + pokemon.getName() + ")");
+            boolean result = this.collection.modify(pokemon);
+            response.setError(!result);
+        } catch (Exception e) {
+            response.setError(true);
+            response.setMessage(e.getMessage());
         }
 
-        return result;
+        return response;
     }
 
-    @RequestMapping(value = "/delete", method = RequestMethod.DELETE, consumes = "application/json", produces = "application/json")
+    @RequestMapping(value = "/delete/{name}", method = RequestMethod.DELETE, produces = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public boolean delete(@RequestBody @Valid  Map<String, String> parameters, HttpServletResponse response) {
-        String name = parameters.get("name");
-        log.info("PokemonController::delete (" + name + ")");
-        boolean result = this.collection.delete(name);
-        if (result) {
-            response.setStatus(HttpServletResponse.SC_ACCEPTED);
-        } else {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+    public PokemonResponse delete(@PathVariable String name) {
+        PokemonResponse response = new PokemonResponse();
+        try {
+            log.info("PokemonController::delete (" + name + ")");
+            boolean result = this.collection.delete(name);
+            response.setError(!result);
+        } catch (Exception e) {
+            response.setError(true);
+            response.setMessage(e.getMessage());
         }
 
-        return result;
+        return response;
     }
 }

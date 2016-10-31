@@ -1,9 +1,9 @@
-package com.pokedex;
+package com.pokedex.domain;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
+import com.pokedex.exception.RestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +27,7 @@ public class PokemonCollection {
         return this.collection;
     }
 
-    public ArrayList getAllFavorites() {
+    private int getFavorites() {
         ArrayList favorites = new ArrayList<Pokemon>();
         for (Pokemon p : this.collection) {
             if (p.isFavorite()) {
@@ -35,7 +35,7 @@ public class PokemonCollection {
             }
         }
 
-        return favorites;
+        return favorites.size();
     }
 
     public Pokemon getOneByName(String name) {
@@ -49,10 +49,13 @@ public class PokemonCollection {
         return null;
     }
 
-    public boolean setFavorite(String name) {
+    public boolean setFavorite(String name) throws RestException {
         log.info("PokemonCollection::setFavorite (" + name + ")");
         boolean result = false;
-        try {
+            if(this.getFavorites() >= 10) {
+                throw new RestException(RestException.MAX_FAVORITOS);
+            }
+
             Pokemon p = new Pokemon(name);
             int pos = this.collection.indexOf(p);
 
@@ -61,16 +64,10 @@ public class PokemonCollection {
                 result = true;
             }
 
-            result = false;
-
-        } catch (Exception e) {
-            log.error("PokemonCollection::add exception " + e.getMessage());
-        } finally {
             return result;
-        }
     }
 
-    public boolean unsetFavorite(String name) {
+    public boolean unsetFavorite(String name) throws RestException {
         log.info("PokemonCollection::unsetFavorite (" + name + ")");
         boolean result = false;
         try {
@@ -88,7 +85,7 @@ public class PokemonCollection {
         }
     }
 
-    public boolean add(Pokemon pokemon) {
+    public boolean add(Pokemon pokemon) throws RestException {
         log.info("PokemonCollection::add (" + pokemon + ")");
         boolean result = false;
         try {
@@ -106,7 +103,7 @@ public class PokemonCollection {
         }
     }
 
-    public boolean modify(Pokemon pokemon) {
+    public boolean modify(Pokemon pokemon) throws RestException {
         log.info("PokemonCollection::modify (" + pokemon + ")");
         boolean result = false;
         try {
@@ -124,7 +121,7 @@ public class PokemonCollection {
         }
     }
 
-    public boolean delete(String name) {
+    public boolean delete(String name) throws RestException {
         log.info("PokemonCollection::delete (" + name + ")");
         boolean result = false;
         try {
@@ -187,21 +184,26 @@ public class PokemonCollection {
 
         Pokemon pokemon;
         Random rnd = new Random();
-        int type;
-        Long evolution;
+        int type1, type2;
+        ArrayList<String> typesArray;
+        String evolution;
         boolean isFavorite;
         boolean hasEvolution;
 
         for (int i = 0; i < names.length; i++) {
-            type = (int) (rnd.nextDouble() * names.length);
-            isFavorite = (type > (names.length / 2));
+            type1 = (int) (rnd.nextDouble() * names.length);
+            type2 = (int) (rnd.nextDouble() * names.length);
+            typesArray = new ArrayList<String>();
+            typesArray.add(types[type1]);
+            typesArray.add(types[type2]);
+            isFavorite = (type1 > (names.length / 2) || type2 > (names.length / 2));
             hasEvolution = ((int) (rnd.nextDouble() * names.length) > (names.length / 3));
-            evolution = hasEvolution ? new Long((int) (rnd.nextDouble() * names.length)) : null;
+            evolution = hasEvolution ? names[(int)(rnd.nextDouble() * names.length)] : null;
 
             pokemon = new Pokemon();
             pokemon.setId(i);
             pokemon.setName(names[i]);
-            pokemon.setType(types[type]);
+            pokemon.setTypes(typesArray);
             pokemon.setDescription("Pokemon called " + names[i]);
             pokemon.setFavorite(isFavorite);
             pokemon.setFavorite(isFavorite);

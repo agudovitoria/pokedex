@@ -1,5 +1,6 @@
 package com.pokedex;
 
+import com.pokedex.domain.PokemonCollection;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

@@ -1,10 +1,9 @@
-package com.pokedex.exceptions;
+package com.pokedex.exception;
 
 /**
  * Created by iagudo on 30/10/16.
  */
 public class RestException extends Exception {
-    // EJEMPLAR
     public static final String POKEMON_NO_EXISTE = "Pokemon no encontrado";
     public static final String MAX_FAVORITOS = "Máximos Pokemons favoritos alcanzado";
 
